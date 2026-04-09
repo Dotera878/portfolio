@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務改善アプリ開発 — あなたの"困った"をコードで解決</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06080c;
+  --surface: #0e1117;
+  --surface2: #161b24;
+  --surface3: #1c222e;
+  --border: #252d3a;
+  --border-hover: #3a4558;
+  --text: #e4e8f0;
+  --text-dim: #7b8499;
+  --text-mid: #a0a8b8;
+  --accent: #4ecdc4;
+  --accent-dim: rgba(78,205,196,0.12);
+  --accent-glow: rgba(78,205,196,0.06);
+  --red: #ff6b6b;
+  --blue: #74b9ff;
+  --purple: #a29bfe;
+  --orange: #ffa94d;
+  --pink: #f783ac;
+  --line-green: #06c755;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;}
+.orb{position:fixed;border-radius:50%;pointer-events:none;filter:blur(100px);z-index:0;}
+.orb-1{width:500px;height:500px;top:5%;left:-8%;background:rgba(78,205,196,0.08);animation:od1 20s ease-in-out infinite;}
+.orb-2{width:450px;height:450px;bottom:10%;right:-8%;background:rgba(116,185,255,0.07);animation:od2 18s ease-in-out infinite;}
+.orb-3{width:400px;height:400px;top:45%;left:35%;background:rgba(162,155,254,0.05);animation:od3 22s ease-in-out infinite;}
+@keyframes od1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,60px) scale(1.1)}66%{transform:translate(-40px,100px) scale(.95)}}
+@keyframes od2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-70px,-50px) scale(1.1)}66%{transform:translate(50px,-80px) scale(.9)}}
+@keyframes od3{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-70px) scale(1.15)}66%{transform:translate(-80px,40px) scale(.9)}}
+
+nav{position:fixed;top:0;width:100%;z-index:100;padding:1rem 2rem;backdrop-filter:blur(24px);background:rgba(6,8,12,0.75);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+nav .logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,var(--accent),#44b8b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav .links{display:flex;gap:1.8rem;}
+nav .links a{color:var(--text-dim);text-decoration:none;font-size:.82rem;font-weight:400;letter-spacing:.04em;transition:color .3s;}
+nav .links a:hover{color:var(--accent);}
+
+.wrap{max-width:960px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:6rem;}
+.hero-label{font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fu .7s .2s forwards;}
+.hero h1{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:800;line-height:1.15;letter-spacing:-.03em;margin-bottom:1.5rem;opacity:0;animation:fu .7s .35s forwards;}
+.hero h1 .hl{background:linear-gradient(135deg,var(--accent),#44b8b0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1rem;color:var(--text-dim);max-width:520px;line-height:1.9;opacity:0;animation:fu .7s .5s forwards;}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.5rem;opacity:0;animation:fu .7s .65s forwards;}
+.hero-chip{font-size:.72rem;font-weight:500;padding:.4rem 1rem;border-radius:99px;background:var(--surface2);border:1px solid var(--border);color:var(--text-mid);}
+.hero-stats{display:flex;gap:2rem;margin-top:3rem;opacity:0;animation:fu .7s .8s forwards;}
+.hero-stats>div{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem 2.5rem;flex:1;text-align:center;transition:all .3s;}
+.hero-stats>div:hover{border-color:var(--accent);box-shadow:0 8px 32px rgba(78,205,196,.1);transform:translateY(-3px);}
+.stat-num{font-family:'Outfit',sans-serif;font-size:3.5rem;font-weight:800;color:var(--accent);line-height:1;}
+.stat-label{font-size:.9rem;color:var(--text-mid);margin-top:.6rem;font-weight:500;}
+.hero-cta{margin-top:3rem;opacity:0;animation:fu .7s .95s forwards;}
+.hero-cta a{display:inline-flex;align-items:center;gap:.6rem;padding:1rem 2.2rem;border-radius:12px;font-weight:700;font-size:.95rem;text-decoration:none;transition:all .3s;background:var(--line-green);color:#fff;}
+.hero-cta a:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(6,199,85,.3);}
+
+.sec{padding:6rem 0;position:relative;z-index:1;}
+.sec-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:3rem;}
+.sec-num{font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;color:var(--accent);letter-spacing:.06em;}
+.sec-title{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:700;letter-spacing:-.01em;}
+.sec-line{flex:1;height:1px;background:var(--border);}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.about-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .3s;}
+.about-card:hover{border-color:var(--border-hover);transform:translateY(-2px);}
+.about-icon{font-size:2rem;margin-bottom:1rem;}
+.about-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.6rem;}
+.about-card p{font-size:.88rem;color:var(--text-dim);line-height:1.85;}
+.about-story{grid-column:1/-1;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;}
+.about-story h3{font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:var(--accent);}
+.about-story p{font-size:.9rem;color:var(--text-dim);line-height:2;margin-bottom:1rem;}
+.about-story p:last-child{margin-bottom:0;}
+
+/* Project cards */
+.proj{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .4s cubic-bezier(.22,1,.36,1);}
+.proj:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.3);}
+.proj-top{padding:2rem 2rem 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.proj-badge{font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.3rem .8rem;border-radius:99px;}
+.b-auto{background:rgba(78,205,196,.12);color:var(--accent);}
+.b-web{background:rgba(116,185,255,.12);color:var(--blue);}
+.b-ai{background:rgba(162,155,254,.12);color:var(--purple);}
+.b-mob{background:rgba(247,131,172,.12);color:var(--pink);}
+.proj-num{font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;color:var(--text-dim);}
+.proj-body{padding:1.2rem 2rem 2rem;}
+.proj-name{font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:.6rem;}
+.proj-desc{font-size:.88rem;color:var(--text-dim);line-height:1.85;margin-bottom:1.2rem;}
+.proj-feats{background:var(--surface2);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.2rem;}
+.proj-feats-label{font-size:.68rem;font-weight:600;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
+.feat-list{display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.5rem;}
+.feat-item{font-size:.8rem;color:var(--text-mid);line-height:1.6;padding-left:1rem;position:relative;}
+.feat-item::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:.7rem;}
+.proj-chal{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:1rem 1.4rem;margin-bottom:1.2rem;}
+.proj-chal-label{font-size:.68rem;font-weight:600;color:var(--red);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
+.proj-chal p{font-size:.82rem;color:var(--text-dim);line-height:1.7;}
+.proj-foot{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+.proj-tech{display:flex;flex-wrap:wrap;gap:.4rem;}
+.proj-tech span{font-size:.68rem;font-weight:500;padding:.2rem .6rem;border-radius:6px;background:var(--surface3);border:1px solid var(--border);color:var(--text-dim);}
+.proj-impact{text-align:right;}
+.imp-val{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent);line-height:1;}
+.imp-lbl{font-size:.7rem;color:var(--text-dim);margin-top:.2rem;}
+
+/* PC projects grid */
+.projects-pc{display:grid;gap:1.5rem;}
+/* Mobile slider */
+.projects-mobile{display:none;}
+.slider-container{position:relative;overflow:hidden;border-radius:16px;}
+.slider-track{display:flex;transition:transform .4s cubic-bezier(.22,1,.36,1);}
+.slide{min-width:100%;box-sizing:border-box;}
+.slide .proj{margin:0 .25rem;height:auto;}
+.slider-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;}
+.slider-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:1.2rem;padding:.6rem 1.2rem;cursor:pointer;transition:all .3s;}
+.slider-btn:hover{border-color:var(--accent);color:var(--accent);}
+.slider-btn:disabled{opacity:.3;cursor:default;}
+.slider-btn:disabled:hover{border-color:var(--border);color:var(--text);}
+.slider-counter{font-family:'Outfit',sans-serif;font-size:.85rem;color:var(--text-mid);}
+.slider-dots{display:flex;justify-content:center;gap:.5rem;margin-top:1rem;flex-wrap:wrap;}
+.slider-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s;border:none;padding:0;}
+.slider-dot.active{background:var(--accent);box-shadow:0 0 8px rgba(78,205,196,.4);transform:scale(1.3);}
+
+/* LINE */
+.line-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;}
+.line-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;display:flex;align-items:flex-start;gap:1rem;transition:all .3s;}
+.line-card:hover{border-color:var(--line-green);transform:translateY(-2px);}
+.line-icon{width:44px;height:44px;border-radius:10px;background:rgba(6,199,85,.12);color:var(--line-green);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.line-card h4{font-size:.92rem;font-weight:600;margin-bottom:.3rem;}
+.line-card p{font-size:.78rem;color:var(--text-dim);line-height:1.6;}
+
+/* Architecture */
+.arch-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;}
+.arch-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;}
+.arch-flow{display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-bottom:2rem;}
+.arch-node{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.8rem 1.2rem;font-size:.82rem;font-weight:500;text-align:center;min-width:110px;}
+.arch-arrow{color:var(--accent);font-size:1.2rem;}
+.arch-desc{font-size:.88rem;color:var(--text-dim);line-height:1.8;text-align:center;max-width:600px;margin:0 auto;}
+
+/* Services */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.svc-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all .3s;}
+.svc-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.3);}
+.svc-icon{font-size:2.5rem;margin-bottom:1rem;}
+.svc-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.6rem;}
+.svc-card p{font-size:.85rem;color:var(--text-dim);line-height:1.8;margin-bottom:1.5rem;}
+.svc-price{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);padding:.6rem 1.2rem;border-radius:10px;background:var(--accent-dim);display:inline-block;}
+
+/* CTA */
+.cta-box{background:linear-gradient(135deg,rgba(78,205,196,.08),rgba(116,185,255,.05));border:1px solid var(--border);border-radius:20px;padding:4rem 3rem;text-align:center;}
+.cta-box h2{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.8rem;}
+.cta-box p{color:var(--text-dim);font-size:1rem;margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;}
+.cta-btn{display:inline-flex;align-items:center;gap:.6rem;padding:1.1rem 2.8rem;border-radius:14px;font-weight:700;font-size:1rem;text-decoration:none;transition:all .3s;background:var(--line-green);color:#fff;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(6,199,85,.3);}
+
+footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim);border-top:1px solid var(--border);position:relative;z-index:1;}
+
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fi{opacity:0;transform:translateY(18px);transition:all .5s cubic-bezier(.22,1,.36,1);}
+.fi.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  nav .links{gap:1rem;}
+  nav .links a{font-size:.72rem;}
+  .hero-stats{flex-direction:column;gap:1rem;}
+  .about-grid{grid-template-columns:1fr;}
+  .projects-pc{display:none !important;}
+  .projects-mobile{display:block !important;}
+  .feat-list{grid-template-columns:1fr;}
+  .proj-foot{flex-direction:column;align-items:flex-start;}
+  .proj-impact{text-align:left;}
+  .svc-grid{grid-template-columns:1fr;}
+  .line-grid{grid-template-columns:1fr;}
+  .arch-flow{flex-direction:column;}
+  .cta-box{padding:3rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+
+<nav>
+  <div class="logo">PORTFOLIO</div>
+  <div class="links">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">Non-Engineer × AI-Driven Development</div>
+  <h1>現場の"困った"を<br><span class="hl">自分で作って解決する</span></h1>
+  <p class="hero-sub">施設運営の現場で感じた非効率を、Google Apps Script × AI を活用して次々と自動化。非エンジニアながら、業務アプリ7つ＋LINE公式アカウント7つを開発・運用中。</p>
+  <div class="hero-chips">
+    <span class="hero-chip">Google Apps Script</span><span class="hero-chip">HTML / CSS / JS</span>
+    <span class="hero-chip">Google Sheets</span><span class="hero-chip">Gemini API</span>
+    <span class="hero-chip">Gmail API</span><span class="hero-chip">LINE Messaging API</span>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">14</div><div class="stat-label">プロジェクト開発</div></div>
+    <div><div class="stat-num">0円</div><div class="stat-label">ランニングコスト</div></div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">About</h2><div class="sec-line"></div></div>
+  <div class="about-grid">
+    <div class="about-card fi"><div class="about-icon">🏢</div><h3>施設運営の現場から</h3><p>温泉施設、宿泊施設、RVパーク、生花販売 — 複数の事業を運営する中で、毎日のように非効率な業務と向き合ってきました。</p></div>
+    <div class="about-card fi"><div class="about-icon">🤖</div><h3>AIを武器にした独学開発</h3><p>プログラミング経験ゼロからスタート。AIツールを活用し、深夜まで試行錯誤しながら現場で実際に使えるアプリを作り続けています。</p></div>
+    <div class="about-card fi"><div class="about-icon">👴</div><h3>ユーザーファースト設計</h3><p>80代のスタッフでも迷わず使えるUI。大きなボタン、日本語ラベル、ワンタップ操作 — 使う人の目線で設計。</p></div>
+    <div class="about-card fi"><div class="about-icon">💰</div><h3>コストゼロの自動化</h3><p>Google Workspace の無料エコシステム内で完結。サーバー代・ライセンス料ゼロで業務を自動化します。</p></div>
+    <div class="about-story fi">
+      <h3>📖 ストーリー</h3>
+      <p>きっかけは、毎月のレポート作成に何時間もかかる非効率さに限界を感じたこと。「これ、自動化できないかな？」 — その一言から、Google Apps Script の独学が始まりました。</p>
+      <p>最初はコピペの繰り返し。エラーが出るたびにAIに泣きつく日々。でも、自分が作ったアプリで同僚の「ありがとう」が聞けたとき、この道を進む覚悟が決まりました。</p>
+      <p>今では7つの業務アプリと7つのLINE公式アカウントを開発・運用中。あなたの現場にも同じ「もったいない」があるなら — 一緒に解決しましょう。</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="sec" id="projects">
+  <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Projects — 業務アプリ</h2><div class="sec-line"></div></div>
+
+  <div class="projects-pc" id="projects-pc">
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-web">Web App</span><span class="proj-num">#01</span></div><div class="proj-body"><h3 class="proj-name">温泉施設 業務管理アプリ</h3><p class="proj-desc">公営温泉施設の日常業務をワンストップで管理。来場者数・売上・経費・勤怠を一元管理し、市役所への月次報告データを自動集計。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">1時間ごとの来場者数入力（男女別）</div><div class="feat-item">当日来場者数・売上リアルタイム集計</div><div class="feat-item">男女×大人/小人×支払方法の細分類</div><div class="feat-item">旬別月間累計データ表示</div><div class="feat-item">経費・通帳入力</div><div class="feat-item">物品販売・メモ管理</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>紙やバラバラのシートで管理していた日次データを統合。入力データがそのまま報告書に。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">-80%</div><div class="imp-lbl">レポート作業削減</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-auto">Automation</span><span class="proj-num">#02</span></div><div class="proj-body"><h3 class="proj-name">RVパーク駐車場管理アプリ</h3><p class="proj-desc">RVパークの駐車スペースをカレンダー形式で一元管理。予約確定メールをトリガーに自動データ取込。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">週間カレンダーUI</div><div class="feat-item">予約メール自動取込</div><div class="feat-item">予約詳細編集</div><div class="feat-item">自動トリガーでリアルタイム更新</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>目視確認→手動割り振りを自動化。ダブルブッキング防止。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Gmail API</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">全自動</div><div class="imp-lbl">メール→配置管理</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-auto">Automation</span><span class="proj-num">#03</span></div><div class="proj-body"><h3 class="proj-name">カヌレ納品管理アプリ</h3><p class="proj-desc">宿泊プラン付随のミニカヌレ納品数を予約メールから自動取得。60日先まで一覧表示。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">日別納品数サマリー＋TODAYハイライト</div><div class="feat-item">予約メールから自動取得</div><div class="feat-item">納品個数の自動算出</div><div class="feat-item">60日先まで一覧表示</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>手動確認・計算を自動化。仕込みの準備漏れ防止。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Gmail API</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">60日分</div><div class="imp-lbl">先読み管理</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-web">Web App</span><span class="proj-num">#04</span></div><div class="proj-body"><h3 class="proj-name">生花販売管理システム v1</h3><p class="proj-desc">PC苦手な年配スタッフでも使える設計を最優先に。3つのスプレッドシートを1つに統合。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">品目・数量・単価の入力グループ登録</div><div class="feat-item">手数料・支払額の自動計算</div><div class="feat-item">金庫状況ダッシュボード</div><div class="feat-item">レジ締め・月末精算・生産者マスタ管理</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>3シートを1画面に統合。大きなボタン・日本語ラベルでIT苦手なスタッフも操作可能に。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">3→1</div><div class="imp-lbl">シート統合</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-ai">AI Powered</span><span class="proj-num">#05</span></div><div class="proj-body"><h3 class="proj-name">生花販売売上管理 v2（AI搭載版）</h3><p class="proj-desc">v1をモバイルファーストで再設計。AIレシート解析で写真→自動入力。請求書PDF自動生成。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">月別売上・仕入れサマリー</div><div class="feat-item">AIレシート解析（カメラ→自動入力）</div><div class="feat-item">クイック入力＋手動入力の2モード</div><div class="feat-item">取引先別・請求書PDF自動生成</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>段ボールの切れ端の納品書→カメラ撮影→AI解析→自動入力。請求書も完全自動化。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Gemini API</span><span>Sheets</span><span>Drive</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">AI解析</div><div class="imp-lbl">写真→入力→請求書</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-web">Web App</span><span class="proj-num">#06</span></div><div class="proj-body"><h3 class="proj-name">EV充電管理システム</h3><p class="proj-desc">複数EV車両のバッテリー充電状況をスタッフ間で共有する4画面構成アプリ。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">充電開始/完了報告（電圧・色判定・写真）</div><div class="feat-item">全車体リアルタイムダッシュボード</div><div class="feat-item">充電ログ一覧</div><div class="feat-item">車体マスタ・しきい値・アプリ設定</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>口頭・属人的な確認をスマホ報告→ダッシュボード共有に。色判定で危険度を直感把握。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>Drive</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">4画面</div><div class="imp-lbl">管理・報告・ダッシュ・設定</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-mob">Mobile Ready</span><span class="proj-num">#07</span></div><div class="proj-body"><h3 class="proj-name">デジタル出勤簿</h3><p class="proj-desc">手書き出勤簿をデジタル化。80代〜20代まで、ボタンひとつで出退勤記録。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">出勤・休憩・戻り・退勤の4ボタン記録</div><div class="feat-item">月間勤務実績表示</div><div class="feat-item">管理者向けスプレッドシート連携</div><div class="feat-item">印刷対応</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>記入漏れ・改ざんリスク・集計作業を解消。管理者不在でも把握可能に。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">全年齢</div><div class="imp-lbl">80代〜20代対応UI</div></div></div></div></article>
+  </div>
+
+  <div class="projects-mobile" id="projects-mobile">
+    <div class="slider-container"><div class="slider-track" id="slider-track"></div></div>
+    <div class="slider-nav">
+      <button class="slider-btn" id="prev-btn" onclick="slideMove(-1)">◀</button>
+      <span class="slider-counter" id="slider-counter">1 / 7</span>
+      <button class="slider-btn" id="next-btn" onclick="slideMove(1)">▶</button>
+    </div>
+    <div class="slider-dots" id="slider-dots"></div>
+  </div>
+</section>
+
+<!-- LINE ACCOUNTS -->
+<section class="sec" id="line-accounts">
+  <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">LINE公式アカウント構築実績</h2><div class="sec-line"></div></div>
+  <div class="line-grid">
+    <div class="line-card fi"><div class="line-icon">📦</div><div><h4>在庫管理</h4><p>LINEトークから在庫確認・更新。専用アプリ不要で即運用。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">🏠</div><div><h4>賃貸不動産会社向け</h4><p>顧客対応をLINEに集約。対応スピード向上。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">⚡</div><div><h4>業務効率化</h4><p>業務効率化の情報発信・相談対応チャネル。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">📋</div><div><h4>大型施設マニュアル</h4><p>都内大型施設のスタッフ向けマニュアルをLINE配信。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">💭</div><div><h4>人生相談</h4><p>気軽に相談できるLINEチャネル。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">👶</div><div><h4>新米パパ向け</h4><p>育児情報発信・コミュニティアカウント。</p></div></div>
+    <div class="line-card fi"><div class="line-icon">🍽️</div><div><h4>飲食店</h4><p>飲食店の集客・顧客コミュニケーション。</p></div></div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="sec">
+  <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Common Architecture</h2><div class="sec-line"></div></div>
+  <div class="arch-box fi">
+    <h3 class="arch-title">共通アーキテクチャ：メール駆動 × GAS × Sheets</h3>
+    <div class="arch-flow">
+      <div class="arch-node">📩 メール<br><small style="color:var(--text-dim)">予約確定 / 受注</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">⚡ GAS<br><small style="color:var(--text-dim)">自動取込 / 解析</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📊 Sheets<br><small style="color:var(--text-dim)">データ蓄積</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🖥️ Web UI<br><small style="color:var(--text-dim)">可視化 / 操作</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📄 出力<br><small style="color:var(--text-dim)">PDF / レポート</small></div>
+    </div>
+    <p class="arch-desc">ランニングコスト0円のGoogle Workspaceエコシステム内で完結。メールやレシートをトリガーにデータ自動取得→Web UIで可視化→PDFやレポートとして出力。</p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Services</h2><div class="sec-line"></div></div>
+  <div class="svc-grid">
+    <div class="svc-card fi"><div class="svc-icon">⚡</div><h3>GAS業務アプリ開発</h3><p>Google Sheets × GAS で業務にぴったりのWebアプリを開発。入力画面からダッシュボード、レポート自動化まで。</p><div class="svc-price">要相談</div></div>
+    <div class="svc-card fi"><div class="svc-icon">💬</div><h3>LINE公式アカウント構築</h3><p>目的に合わせたLINE公式アカウントの設計・構築。リッチメニュー、自動応答、API連携まで対応。</p><div class="svc-price">要相談</div></div>
+    <div class="svc-card fi"><div class="svc-icon">🔄</div><h3>業務自動化コンサル</h3><p>現場のワークフローを分析し、コストゼロで自動化できるポイントを提案。手作業・紙・Excel地獄からの脱却。</p><div class="svc-price">要相談</div></div>
+  </div>
+</section>
+
+<!-- CTA / CONTACT -->
+<section class="sec" id="contact">
+  <div class="cta-box fi">
+    <h2>まずはお気軽にご相談ください</h2>
+    <p>「こんなこと自動化できる？」「うちの業務にも使える？」<br>どんな小さなことでもOKです。</p>
+    <a href="https://lin.ee/XXXXX" class="cta-btn" target="_blank">💬 LINEで無料相談する</a>
+  </div>
+</section>
+
+</div>
+
+<footer>© 2026 — Built with GAS, AI, and passion for automation.</footer>
+
+<script>
+// Fade-in
+const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting){setTimeout(()=>el.target.classList.add('visible'),i*60);obs.unobserve(el.target);}});},{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+// Mobile slider
+(function(){
+  const pc=document.getElementById('projects-pc');
+  const track=document.getElementById('slider-track');
+  const dots=document.getElementById('slider-dots');
+  if(!pc||!track)return;
+  const cards=pc.querySelectorAll('.proj');
+  cards.forEach((c,i)=>{
+    const s=document.createElement('div');s.className='slide';
+    s.innerHTML=c.outerHTML;
+    const p=s.querySelector('.proj');p.classList.remove('fi');p.style.opacity='1';p.style.transform='none';
+    track.appendChild(s);
+    const d=document.createElement('button');
+    d.className='slider-dot'+(i===0?' active':'');
+    d.onclick=()=>slideTo(i);dots.appendChild(d);
+  });
+})();
+let cur=0;const tot=document.querySelectorAll('#slider-track .slide').length;
+function slideTo(i){
+  cur=Math.max(0,Math.min(i,tot-1));
+  document.getElementById('slider-track').style.transform=`translateX(-${cur*100}%)`;
+  document.getElementById('slider-counter').textContent=`${cur+1} / ${tot}`;
+  document.querySelectorAll('.slider-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
+  document.getElementById('prev-btn').disabled=cur===0;
+  document.getElementById('next-btn').disabled=cur===tot-1;
+}
+function slideMove(d){slideTo(cur+d);}
+// Touch swipe
+(function(){
+  const t=document.getElementById('slider-track');if(!t)return;
+  let sx,mv=false;
+  t.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;mv=true;});
+  t.addEventListener('touchmove',e=>{if(!mv)return;if(Math.abs(e.touches[0].clientX-sx)>Math.abs(e.touches[0].clientY-(e.touches[0].clientY)))e.preventDefault();},{passive:false});
+  t.addEventListener('touchend',e=>{if(!mv)return;mv=false;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50){dx<0?slideMove(1):slideMove(-1);}});
+})();
+
+// Canvas particles
+(function(){
+  const c=document.getElementById('bg-canvas'),x=c.getContext('2d');
+  let w,h,ps,m={x:null,y:null};
+  function r(){w=c.width=innerWidth;h=c.height=innerHeight;}
+  document.addEventListener('mousemove',e=>{m.x=e.clientX;m.y=e.clientY;});
+  document.addEventListener('mouseleave',()=>{m.x=null;m.y=null;});
+  const cs=[[78,205,196],[116,185,255],[162,155,254],[255,169,77]];
+  class P{constructor(){this.x=Math.random()*w;this.y=Math.random()*h;this.s=Math.random()*2.5+1;this.bx=(Math.random()-.5)*.5;this.by=(Math.random()-.5)*.5;this.sx=this.bx;this.sy=this.by;this.o=Math.random()*.5+.2;this.c=cs[Math.floor(Math.random()*cs.length)];}
+  update(){if(m.x!==null){const dx=this.x-m.x,dy=this.y-m.y,d=Math.sqrt(dx*dx+dy*dy);if(d<160){const f=(160-d)/160;this.sx+=dx/d*f*.8;this.sy+=dy/d*f*.8;}}this.sx+=(this.bx-this.sx)*.02;this.sy+=(this.by-this.sy)*.02;this.x+=this.sx;this.y+=this.sy;if(this.x<0)this.x=w;if(this.x>w)this.x=0;if(this.y<0)this.y=h;if(this.y>h)this.y=0;}
+  draw(){x.beginPath();x.arc(this.x,this.y,this.s,0,Math.PI*2);x.fillStyle=`rgba(${this.c[0]},${this.c[1]},${this.c[2]},${this.o})`;x.fill();}}
+  function ln(){for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){x.beginPath();x.moveTo(ps[i].x,ps[i].y);x.lineTo(ps[j].x,ps[j].y);x.strokeStyle=`rgba(78,205,196,${(1-d/130)*.2})`;x.lineWidth=.7;x.stroke();}}}
+  function init(){r();const n=Math.min(Math.floor(w*h/14000),100);ps=[];for(let i=0;i<n;i++)ps.push(new P());}
+  function anim(){x.clearRect(0,0,w,h);ps.forEach(p=>{p.update();p.draw();});ln();requestAnimationFrame(anim);}
+  addEventListener('resize',init);init();anim();
+})();
+</script>
+</body>
+</html>
