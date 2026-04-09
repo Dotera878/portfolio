@@ -145,12 +145,12 @@ nav .links a:hover{color:var(--accent);}
 
 /* Services */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-.svc-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all .3s;}
+.svc-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all .3s;display:flex;flex-direction:column;align-items:center;}
 .svc-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.3);}
 .svc-icon{font-size:2.5rem;margin-bottom:1rem;}
 .svc-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.6rem;}
 .svc-card p{font-size:.85rem;color:var(--text-dim);line-height:1.8;margin-bottom:1.5rem;}
-.svc-price{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);padding:.6rem 1.2rem;border-radius:10px;background:var(--accent-dim);display:inline-block;}
+.svc-price{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);padding:.6rem 1.2rem;border-radius:10px;background:var(--accent-dim);display:inline-block;margin-top:auto;}
 
 /* CTA */
 .cta-box{background:linear-gradient(135deg,rgba(78,205,196,.08),rgba(116,185,255,.05));border:1px solid var(--border);border-radius:20px;padding:4rem 3rem;text-align:center;}
@@ -203,14 +203,14 @@ footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim
 <header class="hero">
   <div class="hero-label">Non-Engineer × AI-Driven Development</div>
   <h1>現場の"困った"を<br><span class="hl">自分で作って解決する</span></h1>
-  <p class="hero-sub">施設運営の現場で感じた非効率を、Google Apps Script × AI を活用して次々と自動化。非エンジニアながら、業務アプリ7つ＋LINE公式アカウント7つを開発・運用中。</p>
+  <p class="hero-sub">施設運営の現場で感じた非効率を、Google Apps Script × AI を活用して次々と自動化。非エンジニアながら、業務アプリ8つ＋LINE公式アカウント7つを開発・運用中。</p>
   <div class="hero-chips">
     <span class="hero-chip">Google Apps Script</span><span class="hero-chip">HTML / CSS / JS</span>
     <span class="hero-chip">Google Sheets</span><span class="hero-chip">Gemini API</span>
-    <span class="hero-chip">Gmail API</span><span class="hero-chip">LINE Messaging API</span>
+    <span class="hero-chip">Gmail API</span><span class="hero-chip">Google Calendar API</span><span class="hero-chip">LINE Messaging API</span>
   </div>
   <div class="hero-stats">
-    <div><div class="stat-num">14</div><div class="stat-label">プロジェクト開発</div></div>
+    <div><div class="stat-num">15</div><div class="stat-label">プロジェクト開発</div></div>
     <div><div class="stat-num">0円</div><div class="stat-label">ランニングコスト</div></div>
   </div>
 </header>
@@ -219,15 +219,13 @@ footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim
 <section class="sec" id="about">
   <div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">About</h2><div class="sec-line"></div></div>
   <div class="about-grid">
-    <div class="about-card fi"><div class="about-icon">🏢</div><h3>施設運営の現場から</h3><p>温泉施設、宿泊施設、RVパーク、生花販売 — 複数の事業を運営する中で、毎日のように非効率な業務と向き合ってきました。</p></div>
-    <div class="about-card fi"><div class="about-icon">🤖</div><h3>AIを武器にした独学開発</h3><p>プログラミング経験ゼロからスタート。AIツールを活用し、深夜まで試行錯誤しながら現場で実際に使えるアプリを作り続けています。</p></div>
-    <div class="about-card fi"><div class="about-icon">👴</div><h3>ユーザーファースト設計</h3><p>80代のスタッフでも迷わず使えるUI。大きなボタン、日本語ラベル、ワンタップ操作 — 使う人の目線で設計。</p></div>
-    <div class="about-card fi"><div class="about-icon">💰</div><h3>コストゼロの自動化</h3><p>Google Workspace の無料エコシステム内で完結。サーバー代・ライセンス料ゼロで業務を自動化します。</p></div>
+    <div class="about-card fi"><div class="about-icon">🤝</div><h3>現場に寄り添う開発</h3><p>サービスを作る前に、まず現場の方々の声をお聞きします。使う人の目線で設計するから、本当に役立つツールが生まれます。</p></div>
+    <div class="about-card fi"><div class="about-icon">👴</div><h3>誰でも使えるUI</h3><p>80代のスタッフから20代の若手まで、PC が得意な人も苦手な人も迷わず使える。それがサービスの最低条件です。</p></div>
+    <div class="about-card fi"><div class="about-icon">💰</div><h3>ランニングコストは最低限に</h3><p>Google Workspace のエコシステムを活用し、サーバー代・ライセンス料を最小限に抑えた業務自動化を実現します。</p></div>
+    <div class="about-card fi"><div class="about-icon">🤖</div><h3>AI × 独学開発</h3><p>プログラミング経験ゼロからスタート。AIツールを武器に、現場で実際に使えるアプリを作り続けています。</p></div>
     <div class="about-story fi">
       <h3>📖 ストーリー</h3>
-      <p>きっかけは、毎月のレポート作成に何時間もかかる非効率さに限界を感じたこと。「これ、自動化できないかな？」 — その一言から、Google Apps Script の独学が始まりました。</p>
-      <p>最初はコピペの繰り返し。エラーが出るたびにAIに泣きつく日々。でも、自分が作ったアプリで同僚の「ありがとう」が聞けたとき、この道を進む覚悟が決まりました。</p>
-      <p>今では7つの業務アプリと7つのLINE公式アカウントを開発・運用中。あなたの現場にも同じ「もったいない」があるなら — 一緒に解決しましょう。</p>
+      <p>花業界の個人経営から大手企業まで幅広い現場を経験し、マネジメント業務を通じて「人」と向き合ってきました。その後、地域創生の会社で現場に寄り添った業務改善に取り組む中で、「もっと楽にできるはず」という想いからアプリ開発を独学でスタート。今では8つの業務アプリと7つのLINE公式アカウントを開発・運用しています。</p>
     </div>
   </div>
 </section>
@@ -250,12 +248,14 @@ footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim
     <article class="proj fi"><div class="proj-top"><span class="proj-badge b-web">Web App</span><span class="proj-num">#06</span></div><div class="proj-body"><h3 class="proj-name">EV充電管理システム</h3><p class="proj-desc">複数EV車両のバッテリー充電状況をスタッフ間で共有する4画面構成アプリ。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">充電開始/完了報告（電圧・色判定・写真）</div><div class="feat-item">全車体リアルタイムダッシュボード</div><div class="feat-item">充電ログ一覧</div><div class="feat-item">車体マスタ・しきい値・アプリ設定</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>口頭・属人的な確認をスマホ報告→ダッシュボード共有に。色判定で危険度を直感把握。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>Drive</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">4画面</div><div class="imp-lbl">管理・報告・ダッシュ・設定</div></div></div></div></article>
 
     <article class="proj fi"><div class="proj-top"><span class="proj-badge b-mob">Mobile Ready</span><span class="proj-num">#07</span></div><div class="proj-body"><h3 class="proj-name">デジタル出勤簿</h3><p class="proj-desc">手書き出勤簿をデジタル化。80代〜20代まで、ボタンひとつで出退勤記録。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">出勤・休憩・戻り・退勤の4ボタン記録</div><div class="feat-item">月間勤務実績表示</div><div class="feat-item">管理者向けスプレッドシート連携</div><div class="feat-item">印刷対応</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>記入漏れ・改ざんリスク・集計作業を解消。管理者不在でも把握可能に。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Sheets</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">全年齢</div><div class="imp-lbl">80代〜20代対応UI</div></div></div></div></article>
+
+    <article class="proj fi"><div class="proj-top"><span class="proj-badge b-auto">Automation</span><span class="proj-num">#08</span></div><div class="proj-body"><h3 class="proj-name">日報ジェネレーター</h3><p class="proj-desc">Googleカレンダーの予定を自動取得し、日報フォーマットをワンクリックで生成。コピペするだけで日報作成が完了。</p><div class="proj-feats"><div class="proj-feats-label">主な機能</div><div class="feat-list"><div class="feat-item">日付指定でGoogleカレンダーから予定を自動取得</div><div class="feat-item">時間・内容を日報フォーマットに自動整形</div><div class="feat-item">予定の追加・削除・編集が画面上で可能</div><div class="feat-item">一発コピーボタンでクリップボードに即コピー</div></div></div><div class="proj-chal"><div class="proj-chal-label">解決した課題</div><p>毎日の日報作成にかかる手間を大幅削減。カレンダーに予定を入れておけば、日報はワンクリックで完成。</p></div><div class="proj-foot"><div class="proj-tech"><span>GAS</span><span>Google Calendar API</span><span>HTML/CSS/JS</span></div><div class="proj-impact"><div class="imp-val">ワンクリック</div><div class="imp-lbl">日報作成を時短</div></div></div></div></article>
   </div>
 
   <div class="projects-mobile" id="projects-mobile">
     <div class="slider-nav">
       <button class="slider-btn" id="prev-btn" onclick="slideMove(-1)">◀</button>
-      <span class="slider-counter" id="slider-counter">1 / 7</span>
+      <span class="slider-counter" id="slider-counter">1 / 8</span>
       <button class="slider-btn" id="next-btn" onclick="slideMove(1)">▶</button>
     </div>
     <div class="slider-dots" id="slider-dots"></div>
@@ -297,9 +297,32 @@ footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim
   </div>
 </section>
 
+<!-- PHILOSOPHY -->
+<section class="sec">
+  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">大切にしていること</h2><div class="sec-line"></div></div>
+  <div class="about-grid">
+    <div class="about-card fi" style="grid-column:1/-1;border-left:3px solid var(--accent);">
+      <h3 style="color:var(--accent);margin-bottom:1rem;">🤝 対等なパートナーとして</h3>
+      <p>クライアント様と上下の関係ではなく、対等なパートナーとしてお話をさせていただきます。現場の声に耳を傾け、一緒に最適な解決策を見つけていくスタイルです。</p>
+    </div>
+    <div class="about-card fi">
+      <h3>👂 現場の声から始める</h3>
+      <p>開発の前に、まず現場で働く方々のお声をお聞きします。本当に必要なものを見極めることで、使われるサービスを作ります。</p>
+    </div>
+    <div class="about-card fi">
+      <h3>💡 作らない選択肢も提案</h3>
+      <p>人間関係やコミュニケーションの改善だけで解決できる場合もあります。アプリを作ることが目的ではなく、現場が良くなることがゴールです。</p>
+    </div>
+    <div class="about-card fi" style="grid-column:1/-1;">
+      <h3>📋 要相談にしている理由</h3>
+      <p>同じ業種でも現場の課題は一つひとつ異なります。お困りごとに寄り添ったオーダーメイドのサービスを提供したいから、まずはお話を聞かせてください。</p>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICES -->
 <section class="sec" id="services">
-  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Services</h2><div class="sec-line"></div></div>
+  <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Services</h2><div class="sec-line"></div></div>
   <div class="svc-grid">
     <div class="svc-card fi"><div class="svc-icon">⚡</div><h3>GAS業務アプリ開発</h3><p>Google Sheets × GAS で業務にぴったりのWebアプリを開発。入力画面からダッシュボード、レポート自動化まで。</p><div class="svc-price">要相談</div></div>
     <div class="svc-card fi"><div class="svc-icon">💬</div><h3>LINE公式アカウント構築</h3><p>目的に合わせたLINE公式アカウントの設計・構築。リッチメニュー、自動応答、API連携まで対応。</p><div class="svc-price">要相談</div></div>
@@ -310,8 +333,8 @@ footer{text-align:center;padding:3rem 2rem;font-size:.75rem;color:var(--text-dim
 <!-- CTA / CONTACT -->
 <section class="sec" id="contact">
   <div class="cta-box fi">
-    <h2>まずはお気軽にご相談ください</h2>
-    <p>「こんなこと自動化できる？」「うちの業務にも使える？」<br>どんな小さなことでもOKです。</p>
+    <h2>まずはお気軽にお話しください</h2>
+    <p>「うちの現場でも使える？」「こんな悩みがあるんだけど…」<br>どんな小さなことでも大歓迎です。一緒に考えましょう。</p>
     <a href="https://lin.ee/XXXXX" class="cta-btn" target="_blank">💬 LINEで無料相談する</a>
   </div>
 </section>
